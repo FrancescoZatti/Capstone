@@ -6,26 +6,26 @@ import { useEffect } from 'react'
 
 export default function Prova() {
 
-    const [garden, setGarden] = useState([])
+    const [ortaggi, setOrtaggi] = useState([])
 
-    const fetchGardens = () => {
+    const fetchOrtaggis = () => {
         axios
-          .get('http://127.0.0.1:8000/api/gardens')
-          .then((response => setGarden(response.data.data)))
+          .get('http://127.0.0.1:8000/api/ortaggi')
+          .then((response => setOrtaggi(response.data.data)))
           .catch(error => console.log(error));
       }
       useEffect(() => {
-        fetchGardens();
+        fetchOrtaggis();
       }, [])
 
   return (
     <div>
         <h1>Prova</h1>
-        {garden.length > 0 ? (
+        {ortaggi.length > 0 ? (
         <>
-        <p>{garden[0].name}</p>
-        <p>{garden[0].description}</p>
-        <p>{garden[0].id}</p>
+        <p>{ortaggi[0].name}</p>
+        <p>{ortaggi[0].description}</p>
+        <p>{ortaggi[0].id}</p>
         </>)
         : (<p>Loading...</p>)
         }
