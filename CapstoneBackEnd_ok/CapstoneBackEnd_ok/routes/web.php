@@ -17,4 +17,16 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
+Route::get('/dashboard', function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+        return response()->json([
+            'user' => $user
+        ]);
+    }
+    return response()->json([
+        'message' => 'Unauthorized'
+    ], 401);
+});
+
 require __DIR__.'/auth.php';

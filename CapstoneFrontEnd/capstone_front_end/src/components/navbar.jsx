@@ -3,8 +3,37 @@ import { slide as Menu } from "react-burger-menu";
 import Dropdown from "react-bootstrap/Dropdown";
 import { Link } from "react-router-dom";
 import { Navbar, Nav } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/authSlice";
+import axios from "../api/axios";
+import { useLocation } from "react-router-dom";
 
 export default function Navbar_component() {
+  const handleLogout = async () => {
+    try {
+      await token();
+      await logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  const token = async () => {
+    await axios.get("/sanctum/csrf-cookie");
+  };
+
+  const logout = async () => {
+    try {
+      const response = await axios.post("/logout", {});
+      if (response.status === 200) {
+        console.log("Logout success:", response.data.user);
+        dispatch(logout());
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   const [isOpen, setIsOpen] = useState(false);
 
   const closeMenu = () => setIsOpen(false);
@@ -17,6 +46,13 @@ export default function Navbar_component() {
       window.removeEventListener("click", closeMenu);
     };
   }, []);
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const isAdmin = useSelector((state) =>
+    state.auth.user ? state.auth.user.isAdmin : false
+  );
+  const dispatch = useDispatch();
+  const location = useLocation();
 
   return (
     <Navbar className="navbar navbar-expand-lg py-2">
@@ -42,23 +78,61 @@ export default function Navbar_component() {
               </div>
             }
           >
-            <Nav.Link className="nav_link" as={Link} to="/">Home</Nav.Link>
-            <Nav.Link className="nav_link" href="#">Il tuo orto</Nav.Link>
-            <Nav.Link className="nav_link" href="#">Scambi</Nav.Link>
-            <Nav.Link className="nav_link" as={Link} to="/chisiamo">Chi siamo</Nav.Link>
-            <div style={{ height: "1px", width: "80%", background: "#036d19", margin: "auto" }}></div>
+            <Nav.Link className="nav_link" as={Link} to="/">
+              Home
+            </Nav.Link>
+            <Nav.Link className="nav_link" href="#">
+              Il tuo orto
+            </Nav.Link>
+            <Nav.Link className="nav_link" href="#">
+              Scambi
+            </Nav.Link>
+            <Nav.Link className="nav_link" as={Link} to="/chisiamo">
+              Chi siamo
+            </Nav.Link>
+            <div
+              style={{
+                height: "1px",
+                width: "80%",
+                background: "#036d19",
+                margin: "auto",
+              }}
+            ></div>
             <div className="profile_button d-block"> </div>
-            <Nav.Link className="nav_link" href="#">Login</Nav.Link>
-            <Nav.Link className="nav_link" href="#">Modifica profilo</Nav.Link>
-            <Nav.Link className="nav_link" href="#">Elimina profilo</Nav.Link>
-            <div style={{ height: "1.5rem", width: "80%", background: "transparent", borderBottom: "1px solid #e8e9eb50" }}></div>
-            <Nav.Link className="nav_link" href="#">Esci</Nav.Link>
+            <Nav.Link className="nav_link" href="#">
+              Login
+            </Nav.Link>
+            <Nav.Link className="nav_link" href="#">
+              Modifica profilo
+            </Nav.Link>
+            <Nav.Link className="nav_link" href="#">
+              Elimina profilo
+            </Nav.Link>
+            <div
+              style={{
+                height: "1.5rem",
+                width: "80%",
+                background: "transparent",
+                borderBottom: "1px solid #e8e9eb50",
+              }}
+            ></div>
+            <button className="nav_link" onClick={handleLogout}>
+              Esci
+            </button>
           </Menu>
           <div className="menu d-flex align-items-center gap-3 d-none d-lg-flex">
-            <Nav.Link className="nav_link" as={Link} to="/">Home</Nav.Link>
-            <Nav.Link className="nav_link" href="#">Il tuo orto</Nav.Link>
-            <Nav.Link className="nav_link" href="#">Scambi</Nav.Link>
-            <Nav.Link className="nav_link" as={Link} to="/chisiamo">Chi siamo</Nav.Link>
+            <Nav.Link className="nav_link" as={Link} to="/">
+              Home
+            </Nav.Link>
+            <Nav.Link className="nav_link" href="#">
+              Il tuo orto
+            </Nav.Link>
+            <Nav.Link className="nav_link" href="#">
+              Scambi
+            </Nav.Link>
+            <Nav.Link className="nav_link" as={Link} to="/chisiamo">
+              Chi siamo
+            </Nav.Link>
             <div class="dropdown-center">
               <button
                 class="profile_button bg-transparent border-0 dropdown-toggle"
@@ -83,9 +157,9 @@ export default function Navbar_component() {
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item" href="#">
+                  <button class="dropdown-item" onClick={handleLogout}>
                     Esci
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>

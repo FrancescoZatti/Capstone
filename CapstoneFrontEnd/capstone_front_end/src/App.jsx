@@ -8,6 +8,7 @@ import ErrorPage from './pages/errorpage.jsx';
 import Contact_us from './pages/contact_us.jsx';
 import Login from './pages/login.jsx';
 import Footer from './components/footer.jsx';
+import RegisterPage from './pages/registerpage.jsx';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/chisiamo" element={<Chisiamo />} />
           <Route path="/contact_us" element={<Contact_us />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/registerpage" element={<RegisterPage />} />
         </Routes>
       </div>
       <Footer />

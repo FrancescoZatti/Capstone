@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,12 +14,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        User::factory(10)->create()->each(function ($user) {
+            $user->roles()->create(['is_admin' => false]);
+        });
 
-        \App\Models\User::factory()->create([
+        $testUser = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => Hash::make('testpassword'),
+            'password' => bcrypt('testpassword'),
+        ]);
+
+        $adminUser = User::factory()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('adminpassword'),
+        ]);
+
+        $testUser->roles()->create(['is_admin' => false]);
+        $adminUser->roles()->create(['is_admin' => true]);
+
+        $this->call([
+            OrtaggiSeeder::class,
+            OrtoSeeder::class
         ]);
     }
 }
